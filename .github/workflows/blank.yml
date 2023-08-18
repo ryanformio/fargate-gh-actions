@@ -28,11 +28,7 @@ jobs:
     - name: Deploy to Fargate
       run: |
         # Register a new task definition
-        aws ecs register-task-definition --cli-input-json file://$GITHUB_WORKSPACE/task-def.json
+        TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://$GITHUB_WORKSPACE/task-def.json | jq -r '.taskDefinition.taskDefinitionArn')
 
-        # Start a new task using the task definition
-        aws ecs create-task-set \
-        --cluster $CLUSTER_NAME \
-        --service $SERVICE_NAME \
-        --task-definition $TASK_DEFINITION \
-        --launch-type FARGATE 
+        # Update the service to use the new task definition
+        aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --task-definition $TASK_DEF_ARN 
