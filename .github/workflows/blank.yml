@@ -9,6 +9,7 @@ on:
 env:
   CLUSTER_NAME: gh-action-cluster
   TASK_DEFINITION: sample-fargate
+  SERVICE_NAME: fargate-service
 
 jobs:
   deploy_to_fargate:
@@ -32,5 +33,6 @@ jobs:
         # Start a new task using the task definition
         aws ecs create-task-set \
         --cluster $CLUSTER_NAME \
+        --service $SERVICE_NAME \
         --task-definition $TASK_DEFINITION \
         --launch-type FARGATE 
